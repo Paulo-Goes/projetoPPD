@@ -1,46 +1,47 @@
 import javax.swing.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+        // Fila única do supermercado com 30 posições
         BlockingQueue<Float> queue = new ArrayBlockingQueue<>(30);
 
+        // JFrame não estará no produto final por ser uma interface gráfica (que não é suportado em compiladores online)
         JFrame f = new JFrame("Store Queue Monitor");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(300, 100);
         f.add(new Monitor(queue));
         f.setVisible(true);
 
-        Thread client = new Thread(new Client(queue));
+        // Thread para gerar clientes na fila
+        Thread client = new Thread(new Producer(queue));
 
-        short checkoutSize = 10;
-        ExecutorService checkouts = Executors.newFixedThreadPool(checkoutSize);
-        for(int i = 0; i < checkoutSize; i++){
-            checkouts.submit(new Checkout(queue));
+        // Instanciar threads para processar pagamentos
+        short consumerSize = 10;
+        Thread[] consumers = new Thread[consumerSize];
+        for (int i = 0; i < consumerSize; i++) {
+            consumers[i] = new Thread(new Consumer((i + 1), queue));
+            consumers[i].start();
         }
 
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        // Sleep tático
+        Thread.sleep(3000);
+
+        // Geramos clientes por 30 segundos e esperamos a fila ficar vazia
 
         client.start();
 
-        try {
-            Thread.sleep(60000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Thread.sleep(30000);
 
         client.interrupt();
 
-        checkouts.shutdownNow();
+        while (!queue.isEmpty()) {
+            Thread.sleep(30000);
+        }
 
-        try {
-            checkouts.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        for (Thread t : consumers) {
+            t.interrupt();
         }
     }
 }

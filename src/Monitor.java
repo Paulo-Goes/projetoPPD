@@ -3,6 +3,8 @@ import java.awt.*;
 import javax.swing.Timer;
 import java.util.concurrent.BlockingQueue;
 
+// Monitor para verificar status da fila
+
 public class Monitor extends JPanel {
     private final JLabel status;
     private final BlockingQueue<Float> queue;
@@ -14,7 +16,7 @@ public class Monitor extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Queue status"));
         add(status, BorderLayout.CENTER);
 
-        Timer t = new Timer(1000, e -> updateStatus());
+        Timer t = new Timer(1000, _ -> updateStatus());
         t.start();
         updateStatus();
     }
