@@ -1,7 +1,7 @@
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
-public class Client implements Runnable{
+public class Client implements Runnable {
 
     private final BlockingQueue<Float> queue;
 
@@ -17,7 +17,7 @@ public class Client implements Runnable{
                 float price = r.nextFloat(10, 1001);
                 price = Math.round(price * 100f) / 100f;
                 this.queue.put(price);
-                //Thread.sleep(250);
+                Thread.sleep(250);
                 System.out.println("Client added: " + price);
             } catch (InterruptedException e) {
                 System.out.println("Client interrupted!");

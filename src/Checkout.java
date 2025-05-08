@@ -14,7 +14,9 @@ public class Checkout implements Runnable{
         while(!Thread.currentThread().isInterrupted()){
             try{
                 queue.take();
-                Thread.sleep(r.nextLong(1000, 5001));
+
+                // Tempo para realizar a compra
+                Thread.sleep(r.nextLong(2000, 5001));
             } catch (InterruptedException e) {
                 System.out.println("Checkout interrupted!");
                 e.printStackTrace();
