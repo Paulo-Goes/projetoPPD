@@ -16,7 +16,7 @@ public class Monitor extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Queue status"));
         add(status, BorderLayout.CENTER);
 
-        Timer t = new Timer(1000, _ -> updateStatus());
+        Timer t = new Timer(1000, e -> updateStatus());
         t.start();
         updateStatus();
     }
