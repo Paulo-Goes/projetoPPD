@@ -27,8 +27,9 @@ public class Producer implements Runnable {
 
                 Thread.sleep(250);
             } catch (InterruptedException e) {
-                System.out.println("Client interrupted!");
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                System.out.println("Producer interrupted!");
+                break;
             }
         }
     }

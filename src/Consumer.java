@@ -27,8 +27,9 @@ public class Consumer implements Runnable {
                     System.out.println("Consumer Thread #" + id + ": Não foi possível adquirir cliente para pagamento");
                 }
             } catch (InterruptedException e) {
-                System.out.println("Checkout interrupted!");
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                System.out.println("Consumer Thread #" + id + " interrupted!");
+                break;
             }
         }
     }

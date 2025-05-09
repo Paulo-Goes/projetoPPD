@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.event.WindowEvent;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -28,7 +29,7 @@ public class Main {
         // Sleep tático
         Thread.sleep(3000);
 
-        // Geramos clientes por 30 segundos e esperamos a fila ficar vazia
+        // Geramos clientes por 30 segundos
 
         client.start();
 
@@ -36,12 +37,10 @@ public class Main {
 
         client.interrupt();
 
-        while (!queue.isEmpty()) {
-            Thread.sleep(30000);
-        }
-
         for (Thread t : consumers) {
             t.interrupt();
         }
+
+        f.dispatchEvent(new WindowEvent(f, WindowEvent.WINDOW_CLOSING));
     }
 }
