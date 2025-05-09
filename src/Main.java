@@ -2,6 +2,10 @@ import javax.swing.*;
 import java.awt.event.WindowEvent;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.DoubleAdder;
+
+import javax.management.monitor.Monitor;
+import javax.swing.JFrame;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
@@ -15,14 +19,18 @@ public class Main {
         f.add(new Monitor(queue));
         f.setVisible(true);
 
+        DoubleAdder adder = new DoubleAdder();
+
+        Producer producer = new Producer(queue);
+
         // Thread para gerar clientes na fila
-        Thread client = new Thread(new Producer(queue));
+        Thread client = new Thread(producer);
 
         // Instanciar threads para processar pagamentos
         short consumerSize = 10;
         Thread[] consumers = new Thread[consumerSize];
         for (int i = 0; i < consumerSize; i++) {
-            consumers[i] = new Thread(new Consumer((i + 1), queue));
+            consumers[i] = new Thread(new Consumer((i + 1), queue, adder));
             consumers[i].start();
         }
 
@@ -37,9 +45,13 @@ public class Main {
 
         client.interrupt();
 
+        Thread.sleep(20000);
+
         for (Thread t : consumers) {
             t.interrupt();
         }
+
+        System.out.println("Expected: " + producer.getTotal() + " | Actual: " + adder.sum());
 
         f.dispatchEvent(new WindowEvent(f, WindowEvent.WINDOW_CLOSING));
     }

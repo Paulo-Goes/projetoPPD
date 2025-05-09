@@ -1,0 +1,52 @@
+// SYNCHRONIZED METHOD
+
+public synchronized void increment() {
+    value++;  // Seguro, pois o método inteiro está sincronizado
+}
+
+-------------------------------------------------------------------------
+// SYNCHRONIZED BLOCK
+
+public void increment() {
+    synchronized (this) {
+        value++;  // Protegido por bloco sincronizado
+    }
+}
+ 
+-------------------------------------------------------------------------
+# STATIC SYNCHRONIZED
+
+private static int value = 0;
+
+public static synchronized void increment() {
+    value++;
+}
+-------------------------------------------------------------------------
+# LOCK OBJECT
+
+ private final Object lock = new Object();  // Objeto usado para controle explícito
+
+    public void increment() {
+        synchronized (lock) {
+            value++;
+        }
+    }
+
+-------------------------------------------------------------------------
+# ATOMIC
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class SharedCounter {
+    private final AtomicInteger value = new AtomicInteger(0);
+
+    public void increment() {
+        value.incrementAndGet();  // Operação atômica
+    }
+
+    public int getValue() {
+        return value.get();
+    }
+}
+
+ 

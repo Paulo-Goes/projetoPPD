@@ -1,14 +1,17 @@
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.DoubleAdder;
 
 public class Consumer implements Runnable {
     private final int id;
     private final BlockingQueue<Float> queue;
+    private final DoubleAdder adder;
 
-    public Consumer(int id, BlockingQueue<Float> queue) {
+    public Consumer(int id, BlockingQueue<Float> queue, DoubleAdder adder) {
         this.id = id;
         this.queue = queue;
+        this.adder = adder;
     }
 
     @Override
@@ -21,7 +24,9 @@ public class Consumer implements Runnable {
 
                 if (price != null) {
                     // Simula tempo aleatório para pagamento
-                    Thread.sleep(r.nextLong(2000, 5001));
+                    //Thread.sleep(r.nextLong(2000, 5001));
+                    Thread.sleep(2500);
+                    adder.add(price);
                     System.out.println("Consumer Thread #" + id + ": Pagamento de " + price + " realizado!");
                 } else {
                     System.out.println("Consumer Thread #" + id + ": Não foi possível adquirir cliente para pagamento");
